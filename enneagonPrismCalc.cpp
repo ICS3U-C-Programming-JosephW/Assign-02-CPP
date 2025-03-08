@@ -12,6 +12,7 @@ an enneagonal prism by asking them for the base length
 #include <algorithm>
 #include <cctype>
 #include <set>
+#include <variant>
 
 // Constant strings for text colours.
 const std::string LIGHT_GREEN = "\033[1;32m",
@@ -29,6 +30,7 @@ const std::string ACCEPTED_UNITS[4] = {"mm", "cm", "in", "ft"};
 /* Define a function validating the user's 
 choice of calculation. */
 std::string initChoiceInput() {
+    
     // Constant string set for input error detections.
     std::set<std::string> ACCEPTED_CHOICES = {"volume", "surface area", 
     "lateral surface area", "base area"};
@@ -72,6 +74,50 @@ std::string initChoiceInput() {
     }
 }
 
+/* Define a dynamic function to check if a number is valid
+for the specific type or case. */
+double checkCaseValidNum(std::string displayMessage, 
+    std::string actualType) {
+    /* Declare variable as double, which 
+    can hold integers. For simplicity, strings 
+    are used to deduce the actual type. */
+    double anyNum;
+
+    // Displays custom message to user.
+    std::cout << displayMessage;
+
+    // Waits for user input.
+    std::cin >> anyNum;
+
+    /* Checks if number is less than or equal to 0
+    and is deemed a float.*/
+    if (anyNum <= 0 && actualType == "double") {
+        // Throws an invalid argument error to be caught.
+        throw std::invalid_argument("\n" + LIGHT_RED + "Please pick a" 
+        + " positive and non-zero value." 
+        + WHITE + "\n");
+    }
+
+    // Checks if number is less than 0 and deemed an integer.
+    else if (anyNum < 0 && actualType == "int") {
+        // Throws another invalid argument error to be caught.
+        throw std::invalid_argument("\n" + LIGHT_RED + "Please pick a" 
+        + " positive value." 
+        + WHITE + "\n");
+    }
+
+    // Otherwise, checks if the user does not do any of the above things.
+    else {
+        // Displays a green text to proceed.
+        std::cout << "\n"
+        << LIGHT_PURPLE << "Accepted."
+        << WHITE << "\n";
+
+        // Returns the number.
+        return anyNum;
+    }
+}
+
 // Runs the main function.
 int main() {
     // Greet the user with a light blue text.
@@ -80,14 +126,21 @@ int main() {
     "\nlateral surface area, and base area of an enneagonal prism!" 
     << WHITE << "\n";
 
-    // Try to run the following.
+    while (true) {
+    // Try to run the following in order.
     try {
+        if (std::cin.fail()) {
+            std::cin.clear();
+        }
         // Get and check the user's choice for calculation.
         std::string calcChoice = initChoiceInput();
+        double base_len = checkCaseValidNum("Please base.\n", "double");
+    
     }
     // Catch any exception thrown dynamically.
-    catch(const std::invalid_argument exception) {
+    catch (const std::invalid_argument exception) {
         // Displays what the error was to the user.
         std::cout << exception.what() << std::endl;
     }
+  }
 }
