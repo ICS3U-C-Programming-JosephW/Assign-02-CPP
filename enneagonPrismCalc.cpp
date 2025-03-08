@@ -103,23 +103,22 @@ std::string checkUnitOptions() {
     }
 }
 
-auto checkPositiveNum(std::string displayMessage, 
-    auto numType, std::string strType) {
+double checkPositiveNum(std::string displayMessage, std::string strType) {
     // Construct an infinite loop.
     while (true) {
-        // Try to create a dynamic input system.
+        // Try to run the following.
         try {
-        // Declare the variable with the complicated number type.
-        numType anyNum;
+            // Declare the variable.
+            double anyNum;
 
-        /* Gets input from a user and converts it to a number type with
-            a custom display message. */
-        std::cout >> displayMessage;
-        std::cin << anyNum;
+            /* Gets input from a user and converts it to a number type with
+                a custom display message. */
+            std::cout << displayMessage;
+            std::cin >> anyNum;
 
-        /* Checks if number is less than or equal to 0 
-        and is a float. */
-        if (anyNum <= 0 && strType == "float") {
+            /* Checks if number is less than or equal to 0
+            and is a float. */
+            if (anyNum <= 0 && strType == "float") {
                 // Throw an invalid argument error to be caught.
                 throw std::invalid_argument("\n\033[1;31mPlease pick a positive"
 " and non-zero value.\033[0m\n");
@@ -134,11 +133,19 @@ auto checkPositiveNum(std::string displayMessage,
         // Checks if the user does not do any of the above things.
         else {
             // Displays a green text to proceed.
-            std::cout >> "\033[1;32mAccepted.\033[0m\n"
+            std::cout << "\033[1;32mAccepted.\033[0m\n";
+            // Return the number.
+            return anyNum;
         }
 
         }
-    }
+        // Catches either thrown error above.
+        catch (const std::invalid_argument errorMsg) {
+            // Displays error message to user.
+            std::cout << errorMsg.what();
+        }
+  }
+
 }
 
 // Run the main function.
@@ -156,4 +163,6 @@ int main() {
     std::string unitChoice = checkUnitOptions();
 
     // Get the base edge length from the user.
+    double baseLen = checkPositiveNum("\n\033[1;33mEnter the base edge length.\033[0m\n",
+    "double");
 }
