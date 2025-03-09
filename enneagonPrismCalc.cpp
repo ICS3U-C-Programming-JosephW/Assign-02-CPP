@@ -24,14 +24,12 @@ LIGHT_BLUE = "\033[1;34m",
 LIGHT_YELLOW = "\033[1;33m",
 WHITE = "\033[0m";
 
-/* ??? */
-const std::string ACCEPTED_UNITS[4] = {"mm", "cm", "in", "ft"};
-
 /* Define a function validating the user's 
 choice of calculation. */
 std::string initChoiceInput() {
     
-    // Constant string set for input error detections.
+    /* String set for detecting 
+    invalid choices from user input. */
     std::set<std::string> ACCEPTED_CHOICES = {"volume", "surface area", 
     "lateral surface area", "base area"};
 
@@ -61,7 +59,7 @@ std::string initChoiceInput() {
 
         // Checks if the transformed string is not in the iterated set.
         if (ACCEPTED_CHOICES.find(transformedString) == ACCEPTED_CHOICES.end()) {
-            // Throws an invalid argument error to be caught.
+            // Prompts user to pick a valid choice.
             std::cout << "\n" << LIGHT_RED << "Please pick volume," 
             << " surface area, lateral surface area, or base area." 
             << WHITE << "\n";
@@ -75,6 +73,55 @@ std::string initChoiceInput() {
 
             // Return the transformed string for future usage.
             return transformedString;
+        }
+    }
+}
+
+/* Define a function validating the user's
+unit choice. */
+std::string getValidUnitInput() {
+
+    /* Another string set 
+    for false unit input detections. */
+    std::set<std::string> ACCEPTED_UNITS = {"mm", "cm", "in", "ft"};
+
+    // Declare string variables.
+    std::string targetUnit, transformedUnit;
+
+    // Construct an infinite loop.
+    while (true) { 
+        /* Display a message asking the user
+        to choose their unit. */
+        std::cout << "\n" << LIGHT_YELLOW << "Enter what units you want" 
+        << " the answer to be in. Choices are: mm, cm, in, or ft." 
+        << WHITE << "\n";
+
+        // Wait for user to input their unit.
+        std::getline(std::cin, targetUnit);
+
+        /* Prepare the size of the transformed unit
+        to match the size of the user's unit of choice. */
+        transformedUnit.resize(targetUnit.size());
+
+        // Transforms the user's choice in lowercase.
+        std::transform(targetUnit.begin(), targetUnit.end(), 
+        transformedUnit.begin(), [](char scannedChar) { return std::tolower(scannedChar); });
+            
+        // Checks if the transformed unit is not in the iterated set.
+        if (ACCEPTED_UNITS.find(transformedUnit) == ACCEPTED_UNITS.end()) {
+            // Prompts user to pick a valid unit.
+            std::cout << "\n" << LIGHT_RED << "Please pick mm, cm," 
+            << " in, or ft." << WHITE << "\n";
+        }
+
+        // Otherwise, checks if the transformed unit is in the iterated set.
+        else {
+            /* Display a word to the user 
+            indicating they chose a valid unit. */
+            std::cout << "\n" << LIGHT_CYAN << "Done!" << WHITE << "\n";
+
+            // Return the transformed string for future usage.
+            return transformedUnit;
         }
     }
 }
@@ -157,8 +204,11 @@ int main() {
     // Get and check the user's choice for calculation.
     std::string calcChoice = initChoiceInput();
 
+    // Get and check the user's choice for units.
+    std::string unit = getValidUnitInput();
+
     // Get and check the user's choice for base edge length.
-    double base_len = checkCaseValidNum("\n" + LIGHT_BLUE +
+    double baseLen = checkCaseValidNum("\n" + LIGHT_BLUE +
         "Enter the base edge length." + WHITE + "\n", 
         "double");
 
