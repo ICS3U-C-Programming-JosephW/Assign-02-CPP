@@ -38,39 +38,44 @@ std::string initChoiceInput() {
     // Declare string variables.
     std::string targetCalculation, transformedString;
 
-    /* Display a message asking the user
-    to choose their calculation. */
-    std::cout << "\n" << LIGHT_YELLOW << "What do you want to calculate?" 
-    << " Again, choices are: volume, surface area," << 
-    " lateral surface area, \nor base area." << " Enter only one of these."
-    << WHITE << "\n";
-    
-    // Wait for user to input.
-    std::getline(std::cin, targetCalculation);
+    // Construct an infinite loop.
+    while (true) {
 
-    /* Prepare the size of the transformed string 
-    to match the size of the user's choice. */
-    transformedString.resize(targetCalculation.size());
+        /* Display a message asking the user
+        to choose their calculation. */
+        std::cout << "\n" << LIGHT_YELLOW << "What do you want to calculate?" 
+        << " Again, choices are: volume, surface area," << 
+        " lateral surface area, \nor base area." << " Enter only one of these."
+        << WHITE << "\n";
+        
+        // Wait for user to input.
+        std::getline(std::cin, targetCalculation);
 
-    // Transforms the user's choice in lowercase.
-    std::transform(targetCalculation.begin(), targetCalculation.end(), 
-    transformedString.begin(), [](char scannedChar) { return std::tolower(scannedChar); });
+        /* Prepare the size of the transformed string 
+        to match the size of the user's choice. */
+        transformedString.resize(targetCalculation.size());
 
-    // Checks if the transformed string is not in the iterated set.
-    if (ACCEPTED_CHOICES.find(transformedString) == ACCEPTED_CHOICES.end()) {
-        // Throws an invalid argument error to be caught.
-        throw std::invalid_argument("\n" + LIGHT_RED + "Please pick volume," 
-        + " surface area, lateral surface area, or base area." 
-        + WHITE + "\n");
-    } 
-    // Otherwise, checks if the transformed string is in the iterated set.
-    else {
-        /* Display a word to the user 
-        indicating they chose correctly. */
-        std::cout << "\n" << LIGHT_PURPLE << "Alright!" << WHITE << "\n";
+        // Transforms the user's choice in lowercase.
+        std::transform(targetCalculation.begin(), targetCalculation.end(), 
+        transformedString.begin(), [](char scannedChar) { return std::tolower(scannedChar); });
 
-        // Return the transformed string for future usage.
-        return transformedString;
+        // Checks if the transformed string is not in the iterated set.
+        if (ACCEPTED_CHOICES.find(transformedString) == ACCEPTED_CHOICES.end()) {
+            // Throws an invalid argument error to be caught.
+            std::cout << "\n" << LIGHT_RED << "Please pick volume," 
+            << " surface area, lateral surface area, or base area." 
+            << WHITE << "\n";
+        }
+
+        // Otherwise, checks if the transformed string is in the iterated set.
+        else {
+            /* Display a word to the user 
+            indicating they chose correctly. */
+            std::cout << "\n" << LIGHT_PURPLE << "Alright!" << WHITE << "\n";
+
+            // Return the transformed string for future usage.
+            return transformedString;
+        }
     }
 }
 
@@ -83,38 +88,38 @@ double checkCaseValidNum(std::string displayMessage,
     are used to deduce the actual type. */
     double anyNum;
 
-    // Displays custom message to user.
-    std::cout << displayMessage;
+    while (true) {
+        // Displays custom message to user.
+        std::cout << displayMessage;
 
-    // Waits for user input.
-    std::cin >> anyNum;
+        // Waits for user input.
+        std::cin >> anyNum;
+    
+        if (anyNum <= 0 && actualType == "double") {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
+            '\n'); 
+            std::cout << "\n" << LIGHT_RED << "Please pick a" 
+            << " positive and non-zero value." 
+            << WHITE << "\n";
+        }
+        else if (anyNum < 0 && actualType == "int") {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
+            '\n');
+            std::cout << "\n" << LIGHT_RED << "Please pick a" 
+            << " positive value or zero." 
+            << WHITE << "\n";
+        }
+        else {
+            // Displays a green text to proceed.
+            std::cout << "\n"
+            << LIGHT_PURPLE << "Accepted."
+            << WHITE << "\n";
 
-    /* Checks if number is less than or equal to 0
-    and is deemed a float.*/
-    if (anyNum <= 0 && actualType == "double") {
-        // Throws an invalid argument error to be caught.
-        throw std::invalid_argument("\n" + LIGHT_RED + "Please pick a" 
-        + " positive and non-zero value." 
-        + WHITE + "\n");
-    }
-
-    // Checks if number is less than 0 and deemed an integer.
-    else if (anyNum < 0 && actualType == "int") {
-        // Throws another invalid argument error to be caught.
-        throw std::invalid_argument("\n" + LIGHT_RED + "Please pick a" 
-        + " positive value." 
-        + WHITE + "\n");
-    }
-
-    // Otherwise, checks if the user does not do any of the above things.
-    else {
-        // Displays a green text to proceed.
-        std::cout << "\n"
-        << LIGHT_PURPLE << "Accepted."
-        << WHITE << "\n";
-
-        // Returns the number.
-        return anyNum;
+            // Returns the number.
+            return anyNum;
+        }
     }
 }
 
@@ -126,21 +131,19 @@ int main() {
     "\nlateral surface area, and base area of an enneagonal prism!" 
     << WHITE << "\n";
 
-    while (true) {
-    // Try to run the following in order.
-    try {
-        if (std::cin.fail()) {
-            std::cin.clear();
-        }
-        // Get and check the user's choice for calculation.
-        std::string calcChoice = initChoiceInput();
-        double base_len = checkCaseValidNum("Please base.\n", "double");
-    
+    // Get and check the user's choice for calculation.
+    std::string calcChoice = initChoiceInput();
+
+    // Get the base edge length from the user.
+    double base_len = checkCaseValidNum("\n" + LIGHT_BLUE +
+        "Enter the base edge length." + WHITE + "\n", 
+        "double");
+
+    if (calcChoice == "volume" || "surface area" 
+        || "lateral surface area") {
+
+        double height = checkCaseValidNum("\n" + LIGHT_BLUE +
+        "Enter the height." + WHITE + "\n", 
+        "double");
     }
-    // Catch any exception thrown dynamically.
-    catch (const std::invalid_argument exception) {
-        // Displays what the error was to the user.
-        std::cout << exception.what() << std::endl;
-    }
-  }
 }
