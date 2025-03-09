@@ -88,33 +88,56 @@ double checkCaseValidNum(std::string displayMessage,
     are used to deduce the actual type. */
     double anyNum;
 
+    // Construct an infinite loop.
     while (true) {
         // Displays custom message to user.
         std::cout << displayMessage;
 
         // Waits for user input.
         std::cin >> anyNum;
-    
+
+        /* Ignores spaces and other characters that skip the other
+        input statements. */
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
+        '\n');
+
+        /* Checks if the actual type is a double 
+        and if the number is less than or equal to 0. */
         if (anyNum <= 0 && actualType == "double") {
+            // Clears flags the infinite loop triggers.
             std::cin.clear();
+
+            // Discards false input from the user.
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
             '\n'); 
+
+            // Prompts the user to pick a positive and non-zero value.
             std::cout << "\n" << LIGHT_RED << "Please pick a" 
             << " positive and non-zero value." 
             << WHITE << "\n";
         }
+
+        /* Checks if the actual type is an int
+        and if the number is less than 0. */
         else if (anyNum < 0 && actualType == "int") {
+            // Clears flags the infinite loop triggers.
             std::cin.clear();
+
+            // Discards false input from the user.
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
             '\n');
+
+            // Prompts the user to pick a positive and non-zero value.
             std::cout << "\n" << LIGHT_RED << "Please pick a" 
             << " positive value or zero." 
             << WHITE << "\n";
-        }
-        else {
-            // Displays a green text to proceed.
+
+        } else {
+            /* Displays a text to the user, 
+            allowing them to proceed. Reminds them what number
+            they chose. */
             std::cout << "\n"
-            << LIGHT_PURPLE << "Accepted."
+            << LIGHT_PURPLE << "Accepted. You chose: " << anyNum
             << WHITE << "\n";
 
             // Returns the number.
@@ -134,14 +157,18 @@ int main() {
     // Get and check the user's choice for calculation.
     std::string calcChoice = initChoiceInput();
 
-    // Get the base edge length from the user.
+    // Get and check the user's choice for base edge length.
     double base_len = checkCaseValidNum("\n" + LIGHT_BLUE +
         "Enter the base edge length." + WHITE + "\n", 
         "double");
 
-    if (calcChoice == "volume" || "surface area" 
-        || "lateral surface area") {
+    // Create a boolean to determine whether the height is needed.
+    bool heightNeeded = calcChoice == "volume" || calcChoice == "surface area"
+    || calcChoice == "lateral surface area";
 
+    // Checks if the height is needed.
+    if (heightNeeded) {
+        // Get and check the user's choice for height.
         double height = checkCaseValidNum("\n" + LIGHT_BLUE +
         "Enter the height." + WHITE + "\n", 
         "double");
