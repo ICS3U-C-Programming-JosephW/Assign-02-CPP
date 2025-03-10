@@ -285,6 +285,12 @@ resultData calculateEnneaprism(std::string calcChoice,
             // Return the result with the struct form.
             return {baseArea, "^2"};
         }
+        /* Return placeholder struct to disable
+        a "no return type warning." It will never
+        be read because the user's choice will always
+        be one of the four cases above.*/
+        default:
+            return {0, "0"};
     }
 }
 
