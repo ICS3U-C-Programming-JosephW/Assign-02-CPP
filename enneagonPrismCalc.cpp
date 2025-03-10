@@ -109,7 +109,7 @@ std::string getValidUnitInput() {
         /* Display a message asking the user
         to choose their unit. */
         std::cout << "\n"
-        << LIGHT_YELLOW << "Enter what units you want"
+        << LIGHT_GREEN << "Enter what units you want"
         << " the answer to be in. Choices are: mm, cm, in, or ft."
         << WHITE << "\n";
 
@@ -252,8 +252,8 @@ resultData calculateEnneaprism(std::string calcChoice,
         // Case 1 is volume.
         case 1: {
             // Calculate volume as a double.
-            double volume = 9 / 4 * pow(baseLen, 2)
-            * 1 / tan(M_PIl / 9) * height;
+            double volume = 9.0 / 4.0 * pow(baseLen, 2)
+            * 1.0 / tan(M_PIl / 9.0) * height;
 
             // Return the result with the struct form.
             return {volume, "^3"};
@@ -262,8 +262,8 @@ resultData calculateEnneaprism(std::string calcChoice,
         // Case 2 is surface area.
         case 2: {
             // Calculate surface area as a double.
-            double surfaceArea = 9 * baseLen * height +
-            9 / 2 * pow(baseLen, 2) * 1 / tan(M_PIl / 9);
+            double surfaceArea = 9.0 * baseLen * height +
+            9.0 / 2.0 * pow(baseLen, 2) * 1.0 / tan(M_PIl / 9.0);
 
             // Return the result with the struct form.
             return {surfaceArea, "^2"};
@@ -271,7 +271,7 @@ resultData calculateEnneaprism(std::string calcChoice,
         // Case 3 is lateral surface area.
         case 3: {
             // Calculate lateral surface area as a double.
-            double lateralSurfaceArea = 9 * baseLen * height;
+            double lateralSurfaceArea = 9.0 * baseLen * height;
 
             // Return the result with the struct form.
             return {lateralSurfaceArea, "^2"};
@@ -279,8 +279,8 @@ resultData calculateEnneaprism(std::string calcChoice,
         // Case 4 is base area.
         case 4: {
             // Calculate base area as a double.
-            double baseArea = 9 / 4
-            * pow(baseLen, 2) * 1 / tan(M_PIl / 9);
+            double baseArea = 9.0 / 4.0 * pow(baseLen, 2)
+            * 1.0 / tan(M_PIl / 9.0);
 
             // Return the result with the struct form.
             return {baseArea, "^2"};
@@ -304,7 +304,7 @@ int main() {
     std::string desiredUnit = getValidUnitInput();
 
     // Get and check the user's choice for base edge length.
-    double baseLen = checkValidNumCase("\n" + LIGHT_YELLOW +
+    double baseLen = checkValidNumCase("\n" + LIGHT_PURPLE +
     "Enter the base edge length.",
     "Please pick a positive and non-zero value.",
     "double", desiredUnit, "base edge length");
@@ -320,8 +320,8 @@ int main() {
     // Checks if the height is needed.
     if (heightNeeded) {
         // Get and check the user's choice for height.
-        height = checkValidNumCase("\n" + LIGHT_PURPLE +
-        "Enter the height",
+        height = checkValidNumCase("\n" + LIGHT_CYAN +
+        "Enter the height.",
         "Please pick a positive and non-zero value.",
         "double", desiredUnit, "height");
     } else {
