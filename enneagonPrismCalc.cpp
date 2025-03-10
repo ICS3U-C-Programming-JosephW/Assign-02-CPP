@@ -84,7 +84,7 @@ std::string initChoiceInput() {
                       << WHITE << "\n";
         } else {
             /* Otherwise, display a word to the user
-            indicating they chose correctly. */
+            indicating they chosen correctly. */
             std::cout << "\n"
                       << LIGHT_PURPLE << "Alright!" << WHITE << "\n";
 
@@ -169,7 +169,7 @@ double checkValidNumCase(std::string displayMessage,
         // Waits for user input.
         std::getline(std::cin, strToBeConverted);
 
-        // Tries the conversion.
+        // Tries to convert the user's input.
         try {
             // Checks if the desired type was an integer.
             if (desiredType == "int") {
@@ -192,7 +192,7 @@ double checkValidNumCase(std::string displayMessage,
                 << LIGHT_RED << desiredErrorMsg
                 << WHITE << "\n";
             } else {
-                // If it passes, the user has chose correctly.
+                // If it passes, the user has chosen correctly.
                 if (desiredType == "int") {
                     /* Display a proceeding message 
                     to the user for inputting a valid integer. */
@@ -247,7 +247,7 @@ resultData calculateEnneaprism(std::string calcChoice,
     int correspondingInt = choiceToInt[calcChoice];
 
     /* Match the user's choice with 
-    the each case using a switch statement. */
+    each case using a switch statement. */
     switch (correspondingInt) {
         // Case 1 is volume.
         case 1: {
