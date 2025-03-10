@@ -7,13 +7,16 @@ surface area, lateral surface area, and base area of
 an enneagonal prism by asking them for the base length
 (edge) and height. */
 
-// Include the iostream and other libraries.
+/* Include the iostream and other libraries for
+functionalities used in the program. */
 #include <algorithm>
 #include <cctype>
+#include <cmath>
+#include <iomanip>
 #include <iostream>
+#include <map>
 #include <set>
 #include <variant>
-#include <map>
 
 // Constant strings for text colours.
 const std::string LIGHT_GREEN = "\033[1;32m",
@@ -25,6 +28,11 @@ const std::string LIGHT_GREEN = "\033[1;32m",
                   LIGHT_YELLOW = "\033[1;33m",
                   LIGHT_WHITE = "\033[37;1m",
                   WHITE = "\033[0m";
+
+struct resultData {
+    double actualResult;
+    std::string unitPower;
+};
 
 /* Define a function validating the user's
 choice of calculation. */
@@ -107,7 +115,7 @@ std::string getValidUnitInput() {
 
         // Transforms the user's choice in lowercase.
         std::transform(targetUnit.begin(), targetUnit.end(),
-        transformedUnit.begin(), [](char scannedChar) { return std::tolower(scannedChar); });
+                       transformedUnit.begin(), [](char scannedChar) { return std::tolower(scannedChar); });
 
         // Checks if the transformed unit is not in the iterated set.
         if (ACCEPTED_UNITS.find(transformedUnit) == ACCEPTED_UNITS.end()) {
@@ -134,9 +142,8 @@ std::string getValidUnitInput() {
 inputted the correct number type for the case.
 Return type is double as it contains integers. */
 double checkValidNumCase(std::string displayMessage,
-    std::string desiredErrorMsg, std::string desiredType, 
-    std::string unit, std::string lengthCase) {
-
+                         std::string desiredErrorMsg, std::string desiredType,
+                         std::string unit, std::string lengthCase) {
     // Declare entered number as a string to use getline.
     std::string strToBeConverted;
 
@@ -150,16 +157,15 @@ double checkValidNumCase(std::string displayMessage,
         /* Displays custom message to user.
         Also, indicates spaces are ignored. */
         std::cout << displayMessage
-        << "\n(WARNING: characters and spaces" 
-        << " following your number will be ignored)." 
-        << WHITE << "\n";
+                  << "\n(WARNING: characters and spaces"
+                  << " following your number will be ignored)."
+                  << WHITE << "\n";
 
         // Waits for user input.
         std::getline(std::cin, strToBeConverted);
 
         // Tries the conversion.
         try {
-
             if (desiredType == "int") {
                 /* Convert the string to int.
                 stoi will throw an error if not possible. */
@@ -174,70 +180,80 @@ double checkValidNumCase(std::string displayMessage,
 
             /* If it passes, check if the int is less than 0
             or if the double is less than or equal to 0. */
-            if ((desiredType == "int" && possibleInt < 0)
-            || (desiredType == "double" && possibleDouble <= 0)) {
-                
+            if ((desiredType == "int" && possibleInt < 0) || (desiredType == "double" && possibleDouble <= 0)) {
                 /* Prompt the user to pick the valid value
                 for the case. */
-                std::cout << "\n" << LIGHT_RED << desiredErrorMsg
-                << WHITE << "\n";
+                std::cout << "\n"
+                          << LIGHT_RED << desiredErrorMsg
+                          << WHITE << "\n";
             }
             // Otherwise, the user has choosen a valid value.
             else {
-
                 if (desiredType == "int") {
-                    /* Display a proceeding message to the user for 
+                    /* Display a proceeding message to the user for
                     inputting a valid integer. */
-                    std::cout << "\n" << LIGHT_GREEN << "Accepted." 
-                    << " You chose " << possibleInt << " " << unit 
-                    << " for " << lengthCase << "." << WHITE << "\n";
+                    std::cout << "\n"
+                              << LIGHT_GREEN << "Accepted."
+                              << " You chose " << possibleInt << " " << unit
+                              << " for " << lengthCase << "." << WHITE << "\n";
 
                     // Return the valid integer.
                     return possibleInt;
-                }
-                else {
+                } else {
                     /* Display a proceeding message to the user for
                     inputting a valid double. */
-                    std::cout << "\n" << LIGHT_GREEN << "Accepted." 
-                    << " You chose " << possibleDouble << " " << unit 
-                    << " for " << lengthCase << "." << WHITE << "\n";
+                    std::cout << "\n"
+                              << LIGHT_GREEN << "Accepted."
+                              << " You chose " << possibleDouble << " " << unit
+                              << " for " << lengthCase << "." << WHITE << "\n";
 
                     // Return the valid double.
                     return possibleDouble;
                 }
             }
-        }  
+        }
 
         // Catches any exception thrown by either stoi or stod.
         catch (const std::exception& exception) {
-
             // Prompts the user not to enter other characters.
-            std::cout << "\n" << LIGHT_RED <<
-            "Please do not enter non-numerical values."
-            << WHITE << "\n";
+            std::cout << "\n"
+                      << LIGHT_RED << "Please do not enter non-numerical values."
+                      << WHITE << "\n";
         }
     }
 }
 
-long double calculateEnneaprism(std::string calcChoice, 
-    double baseLen, double height, std::string unit,
-    int placesToRound) {
-
-    std::map<std::string, int> choiceToInt {
+resultData calculateEnneaprism(std::string calcChoice,
+                           double baseLen, double height) {
+    std::map<std::string, int> choiceToInt{
         {"volume", 1},
         {"surface area", 2},
         {"lateral surface area", 3},
-        {"base area", 4}
-    };
+        {"base area", 4}};
 
     int correspondingInt = choiceToInt[calcChoice];
 
     // Match the user's choice with the following cases using a switch statement.
     switch (correspondingInt) {
+        case 1: {
+            double volume = 9 / 4 * pow(baseLen, 2) * 1 / tan(M_PIl / 9) * height;
+            return {volume, "^3"};
+        }
+        case 2: { 
+            double surfaceArea = 9 * baseLen * height + 
+            9 / 2 * pow(baseLen, 2) * 1 / tan(M_PIl / 9);
+            return {surfaceArea, "^2"};
+        }
+        case 3: {
+            double lateralSurfaceArea = 9 * baseLen * height;
+            return {lateralSurfaceArea, "^2"};
+        }
+        case 4: { 
+            double baseArea = 9 / 4 * pow(baseLen, 2) * 1 / tan(M_PIl / 9);
+            return {baseArea, "^2"};
         }
     }
-
-
+}
 
 // Runs the main function.
 int main() {
@@ -253,35 +269,44 @@ int main() {
     std::string desiredUnit = getValidUnitInput();
 
     // Get and check the user's choice for base edge length.
-    double baseLen = checkValidNumCase("\n" + LIGHT_YELLOW + 
-    "Enter the base edge length", 
-    "Please pick a positive and non-zero value.", 
-    "double", desiredUnit, "base edge length");
+    double baseLen = checkValidNumCase("\n" + LIGHT_YELLOW +
+                                           "Enter the base edge length",
+                                       "Please pick a positive and non-zero value.",
+                                       "double", desiredUnit, "base edge length");
 
     // Create a boolean to determine whether the height is needed.
-    bool heightNeeded = calcChoice == "volume" || 
-    calcChoice == "surface area" || calcChoice == "lateral surface area";
+    bool heightNeeded = calcChoice == "volume" ||
+                        calcChoice == "surface area" || calcChoice == "lateral surface area";
 
+    double height;
+                
     // Checks if the height is needed.
     if (heightNeeded) {
         // Get and check the user's choice for height.
-        double height = checkValidNumCase("\n" + LIGHT_PURPLE + 
-        "Enter the height", 
-        "Please pick a positive and non-zero value.",
-        "double", desiredUnit, "height");
+        height = checkValidNumCase("\n" + LIGHT_PURPLE +
+                                              "Enter the height",
+                                          "Please pick a positive and non-zero value.",
+                                          "double", desiredUnit, "height");
     }
 
     // Otherwise, checks if the height is not needed.
     else {
         /* Set height to a placeholder value like
         zero since it is not needed for base area.*/
-        double height = 0;
+        height = 0;
     }
 
     /* Get and check the amount of decimal
     places the user wants to round the result to. */
-    int placesToRound = checkValidNumCase("\n" + LIGHT_WHITE + 
-    "How many decimal places would you like to round the result to?", 
-    "Please pick a positive value or zero.",
-    "int", "decimal places", "rounding the result");
+    int placesToRound = checkValidNumCase("\n" + LIGHT_WHITE +
+                                              "How many decimal places would you like to round the result to?",
+                                          "Please pick a positive value or zero.",
+                                          "int", "decimal places", "rounding the result");
+
+    resultData finalResult = calculateEnneaprism(calcChoice, baseLen, height);
+
+    std::cout << std::fixed << std::setprecision(placesToRound)
+    << std::setfill('0') << "\n" << DARK_GRAY << "The " << calcChoice 
+    << " of your enneagonal prism is: " << finalResult.actualResult << " " << desiredUnit 
+    << finalResult.unitPower << "." << WHITE << "\n";
 }
